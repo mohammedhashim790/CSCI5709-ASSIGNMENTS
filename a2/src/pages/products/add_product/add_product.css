@@ -1,0 +1,53 @@
+:host {
+    color: black;
+}
+
+h2{
+    color: black;
+}
+
+.dialog-body {
+    background: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+Form{
+    color: black;
+    display: flex;
+    flex-direction: column;
+    width: 500px
+}
+Form div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    text-align: initial;
+    padding: 1ch 0;
+}
+
+Form div label, Form div span{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea{
+    background: transparent;
+    outline: none;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 0.2ch 0.7ch;
+    color: black;
+    resize: none;
+}
+input[type=number]{
+    -moz-appearance: textfield;
+}
+
+.error-text{
+    color: red;
+    font-size: small;
+    align-items: start;
+    justify-content: start;
+}

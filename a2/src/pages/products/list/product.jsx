@@ -1,3 +1,7 @@
+
+
+import './product.css'
+
 export function Product({image, title, description, price}) {
     return (<div className="card-body">
             <img src={image} className="card-image" alt={title}/>
@@ -7,6 +11,14 @@ export function Product({image, title, description, price}) {
                 <p className='price'>
                     ${price}
                 </p>
+            </div>
+            <div className="card-footer">
+                <button className="delete-button small-button">
+                    Delete
+                </button>
+                <button className="edit-button small-button">
+                    Edit
+                </button>
             </div>
         </div>);
 }
