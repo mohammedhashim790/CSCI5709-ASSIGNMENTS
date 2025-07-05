@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const errorHandler = require('./utils/error.handler');
 const logger = require('./utils/app.logger');
@@ -19,11 +18,6 @@ app.use(helmet());
 app.use(cors({origin: process.env.CLIENT_URL, credentials: true}));
 app.use(express.json());
 app.use(cookieParser());
-// // Rate limiting (100 requests per 15 minutes)
-// const limiter = rateLimit({
-//     windowMs: 15 * 60 * 1000, max: 100, message: 'Too many requests from this IP'
-// });
-// app.use('/api', limiter);
 
 app.use('/api', router);
 

@@ -1,9 +1,8 @@
 const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const {sendEmail} = require('../service/email.service');
-const {uploadToCloudinary} = require('../service/email.service');
 const logger = require('../utils/app.logger');
+const {sendVerificationEmail} = require("../service/email.service");
 
 const router = require('express').Router();
 
@@ -13,39 +12,48 @@ router.post('/register/doctor', async (req, res) => {
     const {email, password, name, specialty, licenseNo} = req.body;
 
     const doctor = await User.create({
-        email,
-        password,
-        name,
-        role: 'doctor',
-        specialty,
-        licenseNo,
-        isVerified: false
+        email, password, name, role: 'doctor', specialty, licenseNo, isVerified: false
     });
     await User.updateMany({role: 'admin'}, {$push: {notifications: `New doctor to verify: ${doctor._id}`}});
 
     logger.info(`New doctor registered: ${doctor._id}`);
-    res.status(201).json({success: true, data: {userId: doctor._id,name: doctor.name, status: doctor.isVerified}});
+    res.status(201).json({success: true, data: {userId: doctor._id, name: doctor.name, status: doctor.isVerified}});
 });
+
+
+// @desc    Register patient
+// @route   POST /api/auth/register/patient
+router.post('/register/patient', async (req, res) => {
+    const {email, password, name} = req.body;
+
+    const patient = await User.create({
+        email, password, name, role: 'patient', isVerified: true
+    });
+
+    logger.info(`New patient registered: ${patient._id}`);
+    res.status(201).json({success: true, data: {userId: patient._id, name: patient.name, email: patient.email}});
+});
+
 
 // @desc    Verify doctor (Admin only)
 // @route   POST /api/auth/verify/doctor/:id
-router.post('verify/doctor/:id', async (req, res) => {
+router.post('/verify/doctor/:id', async (req, res) => {
     const doctor = await User.findByIdAndUpdate(req.params.id, {isVerified: true}, {new: true});
 
     if (!doctor) {
         return res.status(404).json({success: false, error: 'Doctor not found'});
     }
 
-    await sendEmail({
-        email: doctor.email,
-        subject: 'CareBridge - Account Approved',
-        template: 'doctorApproved',
-        data: {name: doctor.name}
-    });
+    await sendVerificationEmail(doctor.email, 'approved', {name: doctor.name});
 
     logger.info(`Doctor verified: ${doctor._id}`);
-    res.status(200).json({success: true, data: {}});
+    res.status(200).json({
+        success: true, data: {
+            verified: doctor.isVerified
+        }
+    });
 });
+
 
 // @desc    Login user
 // @route   POST /api/auth/login

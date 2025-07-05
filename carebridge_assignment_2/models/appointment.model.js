@@ -6,7 +6,8 @@ const AppointmentSchema = new mongoose.Schema({
     date: {type: Date, required: true},
     reason: {type: String, required: true},
     status: {type: String, enum: ['pending', 'approved', 'rejected', 'cancelled'], default: 'pending'},
-    createdAt: {type: Date, default: Date.now}
+    createdAt: {type: Date, default: Date.now},
+    link: {type: String}
 });
 
 module.exports = mongoose.model('Appointment', AppointmentSchema);
